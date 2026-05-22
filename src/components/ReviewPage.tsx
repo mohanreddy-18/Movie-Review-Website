@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import YouTube from 'react-youtube';
 import { Star, MessageSquare, X } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { buildTmdbUrl } from '../lib/tmdb';
 
 interface Review {
   id: string;
@@ -47,8 +48,6 @@ export default function ReviewPage({ movieId }: ReviewPageProps) {
   const [rating, setRating] = useState(0);
   const [user, setUser] = useState(null);
 
-  const API_KEY = '41ee980e4b5f05f6693fda00eb7c4fd4';
-
   useEffect(() => {
     // Get the logged-in user
     const fetchUser = async () => {
@@ -62,7 +61,9 @@ export default function ReviewPage({ movieId }: ReviewPageProps) {
     // Fetch movie details (videos and cast still come from TMDB)
     const fetchMovieDetails = async () => {
       const response = await fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}&append_to_response=videos,credits`
+        buildTmdbUrl(`/movie/${movieId}`, {
+          append_to_response: 'videos,credits',
+        })
       );
       const data = await response.json();
       setMovieDetails(data);

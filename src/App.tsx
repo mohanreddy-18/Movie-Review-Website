@@ -7,9 +7,18 @@ import MovieCard from './components/MovieCard';
 import ReviewPage from './components/ReviewPage';
 import Login from './components/Auth/Login';
 import SignUp from './components/Auth/SignUp';
+import { buildTmdbUrl } from './lib/tmdb';
 
-const APILINK = 'https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=41ee980e4b5f05f6693fda00eb7c4fd4&page=1';
-const SEARCHAPI = "https://api.themoviedb.org/3/search/movie?&api_key=41ee980e4b5f05f6693fda00eb7c4fd4&query=";
+const getPopularMoviesUrl = () =>
+  buildTmdbUrl('/discover/movie', {
+    sort_by: 'popularity.desc',
+    page: 1,
+  });
+
+const getSearchMoviesUrl = (query: string) =>
+  buildTmdbUrl('/search/movie', {
+    query,
+  });
 
 function App() {
   const [movies, setMovies] = useState([]);
@@ -32,9 +41,9 @@ function App() {
 
   const handleSearch = (query: string) => {
     if (query) {
-      fetchMovies(SEARCHAPI + encodeURIComponent(query));
+      fetchMovies(getSearchMoviesUrl(query));
     } else {
-      fetchMovies(APILINK);
+      fetchMovies(getPopularMoviesUrl());
     }
   };
 
@@ -43,7 +52,7 @@ function App() {
   };
 
   useEffect(() => {
-    fetchMovies(APILINK);
+    fetchMovies(getPopularMoviesUrl());
   }, []);
 
   return (
